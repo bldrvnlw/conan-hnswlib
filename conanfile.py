@@ -7,6 +7,7 @@ class HnswlibConan(ConanFile):
     #TODO wrap with Conan build tools to extract version from source
     name = "hnswlib"
     branch = "master"
+    version = "latest"
     license = "MIT"
     author = "B. van Lew b.van_lew@lumc.nl"
     # The url for the conan recipe
