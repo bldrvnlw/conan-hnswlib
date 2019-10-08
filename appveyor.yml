@@ -1,0 +1,43 @@
+build: false
+
+environment:
+    PYTHON_HOME: "C:\\Python37"
+
+    CONAN_REFERENCE: "hnswlib/latest"
+    CONAN_USERNAME: "lkeb"
+    CONAN_LOGIN_USERNAME: "admin"
+    CONAN_PASSWORD:
+        secure: g+1lNdgrCLmyKNf3KvbHSln5A1H7BsVhsMsIbwgo+UU=
+    CONAN_BLDRVNLW_TOKEN:
+        secure: eIgpHLriHQm+3JYcUR3PDOHtukwUPFtXmK88tGgHu3xLeSi2v1A4luxPtrVdocBf    
+    CONAN_CHANNEL: "stable"
+    VS150COMNTOOLS: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\"
+    CONAN_UPLOAD: http://cytosplore.lumc.nl:8081/artifactory/api/conan/conan-local
+    CONAN_REMOTE: lkebconan
+    CONAN_STABLE_BRANCH_PATTERN: "release/*"
+    CONAN_UPLOAD_ONLY_WHEN_STABLE: 1
+    APPVEYOR_BUILD_URL: "${APPVEYOR_URL}/project/${APPVEYOR_ACCOUNT_NAME}/${APPVEYOR_PROJECT_NAME}/builds/${APPVEYOR_BUILD_ID}"
+    
+    matrix:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+install:
+  - set PATH=%PYTHON_HOME%;%PYTHON_HOME%/Scripts/;%PATH%
+  - pip install git+https://github.com/bldrvnlw/citools.git#egg=citools
+  - pip.exe install conan --upgrade 
+  - pip.exe install conan_package_tools bincrafters_package_tools
+  - conan user # It creates the conan data directory
+
+notifications:   
+  - provider: Email
+    to: 
+        - b.van_lew@lumc.nl
+    subject: Appveyor hnswlib {{status}}
+
+    message: "URL is {{buildUrl}} Commit ID {{commitId}}. Messages {{jobs.0.messages.0.message}}"
+    on_build_success: true
+    on_build_failure: true
+    on_build_status_changed: true     
+        
+build_script:
+  - python build.py
